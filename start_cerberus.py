@@ -292,6 +292,7 @@ def main(cfg):
                     logging.info("Iteration %s: Failed operators" % (iteration))
                     logging.info("%s\n" % (failed_operators))
                     dbcli.insert(datetime.now(), time.time(), 1, "degraded", failed_operators, "cluster operator")
+                    pool.map(inspect.inspect_operator, failed_operators)
 
                 if not server_status:
                     logging.info(
