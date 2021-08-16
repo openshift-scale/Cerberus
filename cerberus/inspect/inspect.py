@@ -9,6 +9,7 @@ def delete_inspect_directory():
     if os.path.isdir("inspect_data/"):
         logging.info("Deleting existing inspect_data directory")
         runcommand.invoke("rm -R inspect_data")
+    runcommand.invoke("mkdir inspect_data")
 
 
 def inspect_component(namespace):
@@ -18,3 +19,11 @@ def inspect_component(namespace):
         logging.info("Deleted existing %s directory" % (dir_name))
     command_out = runcommand.invoke("oc adm inspect ns/" + namespace + " --dest" "-dir=" + dir_name + " | tr -d '\n'")
     logging.info(command_out)
+
+
+def inspect_operator(operator):
+    dir_name = "inspect_data/" + operator + "-logs.out"
+    if os.path.isdir(dir_name):
+        runcommand.invoke("rm -R " + dir_name)
+        logging.info("Deleted existing %s directory" % (dir_name))
+    runcommand.invoke("kubectl describe co " + operator + " >> " + str(dir_name))
